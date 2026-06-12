@@ -1,0 +1,43 @@
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+let balance = 10000;
+
+app.get("/balance", (req, res) => {
+    res.json({ balance });
+});
+
+app.post("/deposit", (req, res) => {
+    const amount = Number(req.body.amount);
+
+    balance += amount;
+
+    res.json({
+        message: `₹${amount} deposited successfully. New Balance: ₹${balance}`
+    });
+});
+
+app.post("/withdraw", (req, res) => {
+    const amount = Number(req.body.amount);
+
+    if (amount > balance) {
+        return res.json({
+            message: "Insufficient Balance"
+        });
+    }
+
+    balance -= amount;
+
+    res.json({
+        message: `₹${amount} withdrawn successfully. New Balance: ₹${balance}`
+    });
+});
+
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
